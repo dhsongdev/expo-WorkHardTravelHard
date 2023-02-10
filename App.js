@@ -10,6 +10,7 @@ import {
   TextInput,
   View,
   ScrollView,
+  Alert,
 } from 'react-native';
 
 import React, { useEffect, useState } from 'react';
@@ -58,14 +59,29 @@ export default function App() {
       alert('내용을 입력하쇼');
       return;
     }
-    alert(`다음을 추가합니다.
-    ${text}`);
     const newTodos = Object.assign({}, todos, {
       [Date.now()]: { text, type: selectedType },
     });
     setTodos(newTodos);
     await saveTodos(newTodos);
     setText('');
+  };
+
+  //삭제버튼 누를때 해당 todo를 asyncStorage 와 todos에서 삭제
+  //삭제할건지 물어보는 alert 생성
+  const deleteTodo = async (id) => {
+    Alert.alert('Are you sure to delete this To-Do?', `${todos[id].text}`, [
+      { text: 'Cancel' },
+      {
+        text: 'Delete',
+        onPress: async () => {
+          const newTodos = { ...todos };
+          delete newTodos[id];
+          setTodos(newTodos);
+          await saveTodos(newTodos);
+        },
+      },
+    ]);
   };
 
   //앱 시동할때 asyncStorage에서 todos가져와서 render
@@ -117,7 +133,7 @@ export default function App() {
             todos[id].type === selectedType ? (
               <View style={styles.todoBlock} key={id}>
                 <Text style={styles.todoText}>{todos[id].text}</Text>
-                <TouchableOpacity>
+                <TouchableOpacity onPress={() => deleteTodo(id)}>
                   <FontAwesome name="remove" size={18} color="black" />
                 </TouchableOpacity>
               </View>
