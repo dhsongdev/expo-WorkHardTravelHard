@@ -5,6 +5,7 @@ import {
   TouchableOpacity,
   TextInput,
   View,
+  ScrollView,
 } from "react-native";
 
 import React, { useState } from "react";
@@ -24,6 +25,9 @@ export default function App() {
     setText(e.nativeEvent.text);
   };
 
+  //todo를 받아서 저장.
+  //데이터를 배열로 받으면 나중에 찾을때 오래걸릴수도 있으니까 hashtable방식으로 데이터 저장. hash방식은 현재시간.
+  //id: 현재시간, text: 사용자가 적은 todo 내용, type: work인지 travel인지 구분
   const addTodo = (e) => {
     alert(`다음을 추가합니다.
     ${text}`);
@@ -40,10 +44,22 @@ export default function App() {
       <StatusBar style="auto" />
       <View style={styles.header}>
         <TouchableOpacity onPress={work}>
-          <Text style={styles.btnTxt}>Work</Text>
+          <Text
+            style={{
+              ...styles.btnTxt,
+              opacity: selectedType === "work" ? 1 : 0.55,
+            }}
+          >
+            Work
+          </Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={travel}>
-          <Text editable style={styles.btnTxt}>
+          <Text
+            style={{
+              ...styles.btnTxt,
+              opacity: selectedType === "travel" ? 1 : 0.55,
+            }}
+          >
             Travel
           </Text>
         </TouchableOpacity>
@@ -58,6 +74,16 @@ export default function App() {
           onSubmitEditing={addTodo}
           value={text}
         />
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          style={styles.scrollView}
+        >
+          {Object.keys(todos).map((id) => (
+            <View style={styles.todoBlock} key={id}>
+              <Text style={styles.todoText}>{todos[id].text}</Text>
+            </View>
+          ))}
+        </ScrollView>
       </View>
     </View>
   );
@@ -93,9 +119,25 @@ const styles = StyleSheet.create({
     borderColor: "grey",
     borderRadius: 30,
     padding: 15,
+    marginBottom: 15,
   },
   todoInput: {
     width: "90%",
     marginTop: 20,
+  },
+  scrollView: {
+    width: "90%",
+  },
+  todoBlock: {
+    marginTop: 7,
+    marginBottom: 7,
+    backgroundColor: "lightgrey",
+    borderRadius: 17,
+    padding: 20,
+    justifyContent: "center",
+  },
+  todoText: {
+    color: "#2d2c2c",
+    fontSize: 14,
   },
 });
