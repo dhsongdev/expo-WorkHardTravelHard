@@ -11,22 +11,27 @@ import React, { useState } from "react";
 
 export default function App() {
   //useStates
-  const [selected, setSelected] = useState("work");
+  const [selectedType, setSelectedType] = useState("work");
   const [text, setText] = useState("");
+  const [todos, setTodos] = useState({});
 
   //header Work or Travel Button
-  const work = () => setSelected("work");
-  const travel = () => setSelected("travel");
+  const work = () => setSelectedType("work");
+  const travel = () => setSelectedType("travel");
 
   //value 값 활용하기 위해 필수
   const onChangeText = (e) => {
-    console.log(e.nativeEvent.text);
     setText(e.nativeEvent.text);
   };
 
   const addTodo = (e) => {
     alert(`다음을 추가합니다.
     ${text}`);
+    const newTodos = Object.assign({}, todos, {
+      [Date.now()]: { text, type: selectedType },
+    });
+    console.log(newTodos);
+    setTodos(newTodos);
     setText("");
   };
 
@@ -47,7 +52,7 @@ export default function App() {
         <TextInput
           style={[styles.textInput, styles.todoInput]}
           placeholder={
-            selected === "work" ? "Add Work Todo" : "Add Travel Todo"
+            selectedType === "work" ? "Add Work Todo" : "Add Travel Todo"
           }
           onChange={onChangeText}
           onSubmitEditing={addTodo}
