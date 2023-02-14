@@ -36,6 +36,9 @@ export default function App() {
   const getTodos = async () => {
     try {
       const json = await AsyncStorage.getItem(TODO_STORAGE_KEY);
+      if (JSON.parse(json) == null) {
+        return;
+      }
       setTodos(JSON.parse(json));
     } catch (e) {
       console.log(e);
@@ -93,6 +96,7 @@ export default function App() {
   return (
     <View style={styles.container}>
       <StatusBar style="auto" />
+
       <View style={styles.header}>
         <TouchableOpacity onPress={work}>
           <Text
@@ -115,6 +119,7 @@ export default function App() {
           </Text>
         </TouchableOpacity>
       </View>
+
       <View style={styles.body}>
         <TextInput
           style={[styles.textInput, styles.todoInput]}
@@ -125,6 +130,7 @@ export default function App() {
           onSubmitEditing={addTodo}
           value={text}
         />
+
         <ScrollView
           showsVerticalScrollIndicator={false}
           style={styles.scrollView}
@@ -134,7 +140,7 @@ export default function App() {
               <View style={styles.todoBlock} key={id}>
                 <Text style={styles.todoText}>{todos[id].text}</Text>
                 <TouchableOpacity onPress={() => deleteTodo(id)}>
-                  <FontAwesome name="remove" size={18} color="black" />
+                  <FontAwesome name="remove" size={18} color="grey" />
                 </TouchableOpacity>
               </View>
             ) : null
@@ -162,7 +168,7 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: '30%',
     fontWeight: '700',
-    marginTop: 40,
+    marginTop: 10,
     padding: 30,
   },
   body: {
